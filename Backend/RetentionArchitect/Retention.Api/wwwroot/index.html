@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retention Architect</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="app-shell">
+        <header class="hero">
+            <div class="hero__text">
+                <span class="hero__badge">Retention Architect</span>
+                <h1>Churn Prediction Dashboard</h1>
+                <p>
+                    Enter a user ID or a batch of IDs, call your API, and see churn risk,
+                    class probabilities, explanations, and recommendations in one place.
+                </p>
+            </div>
+            <div class="hero__status-card">
+                <div class="status-row">
+                    <span>Backend</span>
+                    <span id="backendStatus" class="pill pill--idle">Checking...</span>
+                </div>
+                <div class="status-row">
+                    <span>ML service</span>
+                    <span id="mlStatus" class="pill pill--idle">Checking...</span>
+                </div>
+                <button id="refreshHealthBtn" class="secondary-button" type="button">Refresh health</button>
+            </div>
+        </header>
+
+        <main class="dashboard-grid">
+            <section class="panel panel--form">
+                <div class="tabs">
+                    <button id="singleTabBtn" class="tab-button tab-button--active" type="button">Single user</button>
+                    <button id="batchTabBtn" class="tab-button" type="button">Batch</button>
+                </div>
+
+                <div id="singleFormSection">
+                    <h2>Predict one user</h2>
+                    <p class="muted">Your current API accepts only <code>UserId</code> for single prediction.</p>
+
+                    <form id="singleForm" class="form-stack">
+                        <label for="userId">User ID</label>
+                        <input id="userId" name="userId" type="text" placeholder="Example: 12345" required />
+
+                        <div class="button-row">
+                            <button class="primary-button" type="submit">Predict user</button>
+                            <button id="singleFillDemoBtn" class="ghost-button" type="button">Use demo value</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="batchFormSection" class="hidden">
+                    <h2>Predict batch</h2>
+                    <p class="muted">Enter one user ID per line. The frontend will send them as <code>userIds</code>.</p>
+
+                    <form id="batchForm" class="form-stack">
+                        <label for="batchUserIds">User IDs</label>
+                        <textarea id="batchUserIds" name="batchUserIds" rows="9" placeholder="12345&#10;45678&#10;99999" required></textarea>
+
+                        <div class="button-row">
+                            <button class="primary-button" type="submit">Predict batch</button>
+                            <button id="batchFillDemoBtn" class="ghost-button" type="button">Use demo values</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="panel panel--results">
+                <div class="results-header">
+                    <h2>Results</h2>
+                    <button id="clearResultsBtn" class="ghost-button" type="button">Clear</button>
+                </div>
+
+                <div id="loadingState" class="info-box hidden">Loading prediction...</div>
+                <div id="errorState" class="info-box info-box--error hidden"></div>
+                <div id="emptyState" class="empty-state">
+                    <h3>No results yet</h3>
+                    <p>Send a request from the form, and the prediction cards will appear here.</p>
+                </div>
+                <div id="resultsContainer" class="results-stack"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
