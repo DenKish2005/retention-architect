@@ -1,40 +1,59 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-import pandas as pd
 from src.features import build_features
 from src.model import load_model, predict
-from src.explainer import get_top_drivers
+from src.explainer import get_top_drivers, get_explanations
 
 app = FastAPI()
-model = load_model("models/lgbm_model.pkl")
+model = load_model()
 
 class PredictRequest(BaseModel):
-    user_id: str
+    userId: str
 
-@app.get("/health")
+class PredictBatchRequest(BaseModel):
+    userIds: list[str]
+
+@app.get("/api/Prediction/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "OK"}
 
-@app.post("/predict_user")
+@app.get("/api/Prediction/health/ml")
+def health_ml():
+    return {"status": "ML OK"}
+
+@app.post("/api/Prediction/user")
 def predict_user(req: PredictRequest):
-    feats = build_features(req.user_id)
-    proba, pred_class = predict(model, feats)
-    drivers = get_top_drivers(model, feats)
-    actions = get_recommendations(pred_class, drivers)
+    X = build_features(req.userId)
+    proba, pred_class = predict(model, X)
+    drivers = get_top_drivers(model, X)
+    explanations = get_explanations(model, X)
+    actions = [exp["description"] for exp in explanations]
     return {
-        "userId": req.user_id,
+        "userId": req.userId,
         "churnProbability": float(max(proba)),
         "predictedClass": pred_class,
         "classProbabilities": dict(zip(["stay","voluntaryChurn","involuntaryChurn"], proba)),
         "topDrivers": drivers,
+        "explanations": explanations,
         "recommendedActions": actions
     }
 
-def get_recommendations(pred_class, drivers):
-    # Rule-based mapping
-    if pred_class == "voluntaryChurn":
-        return ["Notify user", "Offer content/promo", "Send personalized tip"]
-    elif pred_class == "involuntaryChurn":
-        return ["Retry payment", "Update payment method", "Fallback route"]
-    else:
-        return []
+@app.post("/api/Prediction/batch")
+def predict_batch(req: PredictBatchRequest):
+    results = []
+    for uid in req.userIds:
+        X = build_features(uid)
+        proba, pred_class = predict(model, X)
+        drivers = get_top_drivers(model, X)
+        explanations = get_explanations(model, X)
+        actions = [exp["description"] for exp in explanations]
+        results.append({
+            "userId": uid,
+            "churnProbability": float(max(proba)),
+            "predictedClass": pred_class,
+            "classProbabilities": dict(zip(["stay","voluntaryChurn","involuntaryChurn"], proba)),
+            "topDrivers": drivers,
+            "explanations": explanations,
+            "recommendedActions": actions
+        })
+    return results
