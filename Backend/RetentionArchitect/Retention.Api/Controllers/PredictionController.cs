@@ -8,10 +8,14 @@ namespace Retention.Api.Controllers;
 [Route("api/[controller]")]
 public class PredictionController : ControllerBase
 {
-    [HttpGet("health")]
-    public IActionResult Health()
+    [HttpGet("health/ml")]
+    public async Task<IActionResult> HealthMl()
     {
-        return Ok("Retention API is running.");
+        var ok = await mlServiceClient.HealthAsync();
+        if (!ok)
+            return StatusCode(503, "ML service is unavailable.");
+
+        return Ok("ML service is running.");
     }
 
     [HttpPost("user")]
