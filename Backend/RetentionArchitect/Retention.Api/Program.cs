@@ -25,3 +25,12 @@ app.UseAuthorization();
 app.MapControllers();
 
 await app.RunAsync();
+
+builder.Services.AddHttpClient<MlServiceClient>((serviceProvider, client) =>
+{
+    var options = serviceProvider
+        .GetRequiredService<Microsoft.Extensions.Options.IOptions<MlServiceOptions>>()
+        .Value;
+
+    client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
+});

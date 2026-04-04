@@ -19,15 +19,34 @@ public class MlServiceClient
 
     public async Task<PredictionResponse?> PredictUserAsync(PredictUserRequest request)
     {
-        var url = $"{options.BaseUrl}/predict_user";
+        try
+        {
+            var url = $"{options.BaseUrl}/predict_user";
+            var response = await httpClient.PostAsJsonAsync(url, request);
 
-        var response = await httpClient.PostAsJsonAsync(url, request);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
 
-        if (!response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<PredictionResponse>();
+        }
+        catch
         {
             return null;
         }
+    }
 
-        return await response.Content.ReadFromJsonAsync<PredictionResponse>();
+    public async Task<bool> HealthAsync()
+    {
+        try
+        {
+            var response = await httpClient.GetAsync($"{options.BaseUrl}/health");
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
