@@ -7,7 +7,6 @@ builder.Services.Configure<MlServiceOptions>(
     builder.Configuration.GetSection("MlService"));
 
 builder.Services.AddApplicationServices();
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -21,7 +20,16 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Serve the frontend from wwwroot/index.html
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseAuthorization();
 app.MapControllers();
+
+// Optional: if someone goes to an unknown non-API route,
+// return the frontend so the app still feels cohesive.
+app.MapFallbackToFile("index.html");
 
 await app.RunAsync();
