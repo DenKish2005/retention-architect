@@ -37,6 +37,26 @@ public class MlServiceClient
         }
     }
 
+    public async Task<List<PredictionResponse>?> PredictBatchAsync(PredictBatchRequest request)
+    {
+        try
+        {
+            var url = $"{options.BaseUrl}/predict_batch";
+            var response = await httpClient.PostAsJsonAsync(url, request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<List<PredictionResponse>>();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public async Task<bool> HealthAsync()
     {
         try

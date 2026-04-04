@@ -1,12 +1,12 @@
+using Retention.Api.Extensions;
 using Retention.Api.Models.Config;
-using Retention.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<MlServiceOptions>(
     builder.Configuration.GetSection("MlService"));
 
-builder.Services.AddHttpClient<MlServiceClient>();
+builder.Services.AddApplicationServices();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -25,12 +25,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 await app.RunAsync();
-
-builder.Services.AddHttpClient<MlServiceClient>((serviceProvider, client) =>
-{
-    var options = serviceProvider
-        .GetRequiredService<Microsoft.Extensions.Options.IOptions<MlServiceOptions>>()
-        .Value;
-
-    client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
-});

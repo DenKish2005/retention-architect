@@ -8,12 +8,32 @@ namespace Retention.Api.Controllers;
 [Route("api/[controller]")]
 public class PredictionController : ControllerBase
 {
+    private readonly MlServiceClient mlServiceClient;
+    private readonly RecommendationService recommendationService;
+
+    public PredictionController(
+        MlServiceClient mlServiceClient,
+        RecommendationService recommendationService)
+    {
+        this.mlServiceClient = mlServiceClient;
+        this.recommendationService = recommendationService;
+    }
+
+    [HttpGet("health")]
+    public IActionResult Health()
+    {
+        return Ok("Retention API is running.");
+    }
+
     [HttpGet("health/ml")]
     public async Task<IActionResult> HealthMl()
     {
         var ok = await mlServiceClient.HealthAsync();
+
         if (!ok)
+        {
             return StatusCode(503, "ML service is unavailable.");
+        }
 
         return Ok("ML service is running.");
     }
@@ -33,13 +53,37 @@ public class PredictionController : ControllerBase
             return StatusCode(502, "ML service returned no response.");
         }
 
+        if (result.RecommendedActions is null || result.RecommendedActions.Count == 0)
+        {
+            result.RecommendedActions = recommendationService.BuildFallbackRecommendations(result);
+        }
+
         return Ok(result);
     }
 
-    private readonly MlServiceClient mlServiceClient;
-
-    public PredictionController(MlServiceClient mlServiceClient)
+    [HttpPost("batch")]
+    public async Task<IActionResult> PredictBatch([FromBody] PredictBatchRequest request)
     {
-        this.mlServiceClient = mlServiceClient;
+        if (request is null || request.UserIds is null || request.UserIds.Count == 0)
+        {
+            return BadRequest("At least one userId is required.");
+        }
+
+        var result = await mlServiceClient.PredictBatchAsync(request);
+
+        if (result is null)
+        {
+            return StatusCode(502, "ML service returned no response.");
+        }
+
+        foreach (var prediction in result)
+        {
+            if (prediction.RecommendedActions is null || prediction.RecommendedActions.Count == 0)
+            {
+                prediction.RecommendedActions = recommendationService.BuildFallbackRecommendations(prediction);
+            }
+        }
+
+        return Ok(result);
     }
 }
