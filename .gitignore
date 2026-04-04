@@ -1,13 +1,18 @@
-.vs/
-**/.vs/
-bin/
-obj/
-**/bin/
-**/obj/
-*.user
-*.suo
+# Данные (самое тяжелое)
+*.csv
+*.xlsx
+*.parquet
 
-__pycache__/
-*.pyc
-.venv/
+# Виртуальное окружение
 venv/
+.venv/
+env/
+
+# Кэш Python и CatBoost
+__pycache__/
+catboost_info/
+
+# Модели
+*.pkl
+*.bin
+*.onnx
