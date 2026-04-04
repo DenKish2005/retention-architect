@@ -1,6 +1,6 @@
 namespace Retention.Api.Models.Responses;
 
-public class PredicitonResponse
+public class PredictionResponse
 {
     public string UserId { get; set; } = string.Empty;
     public double ChurnProbability { get; set; }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Retention.Api.Models.Requests;
+using Retention.Api.Services;
 
 namespace Retention.Api.Controllers;
 
@@ -13,18 +14,28 @@ public class PredictionController : ControllerBase
         return Ok("Retention API is running.");
     }
 
-    [HttpGet("user")]
-    public IActionResult PredictUser([FromBody] PredictUserRequest request)
+    [HttpPost("user")]
+    public async Task<IActionResult> PredictUser([FromBody] PredictUserRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.UserId))
+        if (request is null || string.IsNullOrWhiteSpace(request.UserId))
         {
             return BadRequest("UserId is required.");
         }
 
-        return Ok(new
+        var result = await mlServiceClient.PredictUserAsync(request);
+
+        if (result is null)
         {
-            userId = request.UserId,
-            message = "Prediction endpoint works."
-        });
+            return StatusCode(502, "ML service returned no response.");
+        }
+
+        return Ok(result);
+    }
+
+    private readonly MlServiceClient mlServiceClient;
+
+    public PredictionController(MlServiceClient mlServiceClient)
+    {
+        this.mlServiceClient = mlServiceClient;
     }
 }
