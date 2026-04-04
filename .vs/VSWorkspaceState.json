@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Backend"
+    "\\Backend",
+    "\\Backend\\RetentionArchitect",
+    "\\Backend\\RetentionArchitect\\Retention.Api"
   ],
+  "SelectedNode": "\\Backend\\RetentionArchitect\\RetentionArchitect.slnx",
   "PreviewInSolutionExplorer": false
 }
