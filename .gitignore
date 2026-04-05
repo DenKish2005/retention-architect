@@ -1,3 +1,28 @@
+# Данные
+*.csv
+*.xlsx
+*.parquet
+
+# Модели (тяжёлые бинарники)
+*.cbm
+*.pkl
+*.bin
+*.onnx
+
+# CatBoost служебные
+catboost_info/
+
+# Python кэш
+__pycache__/
+*.pyc
+*.pyo
+
+# Виртуальные окружения
+venv/
+.venv/
+env/
+UV/
+
 # C# / VS
 .vs/
 **/.vs/
@@ -7,26 +32,3 @@ obj/
 **/obj/
 *.user
 *.suo
-
-# Python
-__pycache__/
-**/__pycache__/
-*.pyc
-*.pyo
-.venv/
-venv/
-UV/
-
-# Данные (тяжёлые)
-*.csv
-*.xlsx
-*.parquet
-
-# ML модели
-*.cbm
-*.pkl
-*.bin
-*.onnx
-
-# CatBoost служебные
-catboost_info/
