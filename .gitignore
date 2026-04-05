@@ -1,3 +1,4 @@
+# C# / VS
 .vs/
 **/.vs/
 bin/
@@ -7,12 +8,25 @@ obj/
 *.user
 *.suo
 
+# Python
 __pycache__/
+**/__pycache__/
 *.pyc
+*.pyo
 .venv/
 venv/
+UV/
 
-obj/
-bin/
-**/obj/
-**/bin/
+# Данные (тяжёлые)
+*.csv
+*.xlsx
+*.parquet
+
+# ML модели
+*.cbm
+*.pkl
+*.bin
+*.onnx
+
+# CatBoost служебные
+catboost_info/
