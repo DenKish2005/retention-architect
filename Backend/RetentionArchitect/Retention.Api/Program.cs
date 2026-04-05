@@ -1,23 +1,35 @@
+using Retention.Api.Extensions;
+using Retention.Api.Models.Config;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.Configure<MlServiceOptions>(
+    builder.Configuration.GetSection("MlService"));
 
+builder.Services.AddApplicationServices();
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+// Serve the frontend from wwwroot/index.html
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
+app.UseAuthorization();
 app.MapControllers();
 
-app.Run();
+// Optional: if someone goes to an unknown non-API route,
+// return the frontend so the app still feels cohesive.
+app.MapFallbackToFile("index.html");
+
+await app.RunAsync();
