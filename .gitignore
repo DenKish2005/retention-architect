@@ -1,18 +1,34 @@
-# Данные (самое тяжелое)
+# Данные
 *.csv
 *.xlsx
 *.parquet
 
-# Виртуальное окружение
+# Модели (тяжёлые бинарники)
+*.cbm
+*.pkl
+*.bin
+*.onnx
+
+# CatBoost служебные
+catboost_info/
+
+# Python кэш
+__pycache__/
+*.pyc
+*.pyo
+
+# Виртуальные окружения
 venv/
 .venv/
 env/
+UV/
 
-# Кэш Python и CatBoost
-__pycache__/
-catboost_info/
-
-# Модели
-*.pkl
-*.bin
-*.onnx 
+# C# / VS
+.vs/
+**/.vs/
+bin/
+obj/
+**/bin/
+**/obj/
+*.user
+*.suo
