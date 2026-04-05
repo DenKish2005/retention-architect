@@ -7,3 +7,5 @@ lightgbm
 shap
 joblib
 pydantic    
+catboost
+ 
