@@ -11,7 +11,7 @@ from src.explainer import get_top_drivers, get_explanations, get_recommended_act
 
 app = FastAPI(title="Retention Architect ML Service")
 
-MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models", "catboost_model.cbm")
+MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "models", "catboost_model.cbm")
 model = load_model(MODEL_PATH)
 
 # ── Schemas ────────────────────────────────────────────────────────────────────
