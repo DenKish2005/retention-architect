@@ -15,4 +15,4 @@ catboost_info/
 # Модели
 *.pkl
 *.bin
-*.onnx
+*.onnx 

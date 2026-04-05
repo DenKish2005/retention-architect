@@ -1,8 +1,6 @@
 import shap
 import numpy as np
 
-import shap
-import numpy as np
 
 def get_top_drivers(model, X, top_n=3):
     explainer = shap.TreeExplainer(model)
